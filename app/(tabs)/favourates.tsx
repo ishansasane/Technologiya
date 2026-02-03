@@ -1,15 +1,22 @@
+import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "react-native";
+import Card from "../components/card";
 
 const Favourates = () => {
   return (
-    <>
-      <SafeAreaView className="flex-1 bg-black">
-        <Text className="text-white text-3xl" style={{ fontFamily: "nothing" }}>
-          Hello
-        </Text>
-      </SafeAreaView>
-    </>
+    <SafeAreaView className="flex-1 bg-black px-4">
+      <Text style={{ fontFamily: "nothing" }} className="text-white text-4xl">
+        Favourites
+      </Text>
+      <ScrollView>
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+        <Card />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 export default Favourates;
