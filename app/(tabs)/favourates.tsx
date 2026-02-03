@@ -1,6 +1,8 @@
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Card from "../components/card";
+import { Button } from "@react-navigation/elements";
+import { fetchArticales } from "@/redux/slice/articale";
 
 const Favourates = () => {
   return (
@@ -10,11 +12,13 @@ const Favourates = () => {
       </Text>
       <ScrollView>
         <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        <Button
+          onPress={async () => {
+            fetchArticales();
+          }}
+        >
+          Click
+        </Button>
       </ScrollView>
     </SafeAreaView>
   );
