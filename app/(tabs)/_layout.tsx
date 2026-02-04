@@ -1,7 +1,19 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchArticales } from "@/redux/slice/articale";
+import { RootType } from "@/redux/store";
 
 const TabsLayout = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchArticales());
+  }, []);
+
+  const data = useSelector((state: RootType) => state.article.data);
+
   return (
     <Tabs
       screenOptions={{

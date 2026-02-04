@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import "../global.css";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "@/redux/store";
 
 export default function RootLayout() {
@@ -10,6 +10,7 @@ export default function RootLayout() {
     mono: require("./../assets/fonts/ibm-plex-mono.regular.ttf"),
     nothing: require("./../assets/fonts/LEDDot-Matrix.ttf"),
   });
+
   return (
     <Provider store={store}>
       <SafeAreaProvider>
