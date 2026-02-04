@@ -17,6 +17,7 @@ type ArticleSliceType = {
   isLoading: boolean;
   data: DataType[];
   saved: DataType[];
+  searchResults: DataType[];
   error?: string;
 };
 
@@ -24,6 +25,7 @@ const initialState: ArticleSliceType = {
   isLoading: false,
   data: [],
   saved: [],
+  searchResults: [],
   error: undefined,
 };
 
@@ -31,6 +33,25 @@ export const fetchArticales = createAsyncThunk<DataType[]>(
   "fetchArticales",
   async () => {
     const response = await axios.get("https://dev.to/api/articles");
+
+    return response.data.map((a: any) => ({
+      id: a.id,
+      title: a.title,
+      isSaved: false,
+      url: a.url,
+      cover_image: a.cover_image,
+      published_at: a.published_at,
+      tag_list: a.tag_list,
+      user: a.user.name,
+      profile_image: a.user.profile_image_90,
+    }));
+  },
+);
+
+export const searchArticlesByTag = createAsyncThunk<DataType[]>(
+  "searchByTag",
+  async (tag) => {
+    const response = await axios.get(`https://dev.to/api/articles?tag=${tag}`);
 
     return response.data.map((a: any) => ({
       id: a.id,
@@ -81,6 +102,18 @@ const articaleSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchArticales.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(searchArticlesByTag.pending, (state) => {
+        state.isLoading = true;
+        state.error = undefined;
+      })
+      .addCase(searchArticlesByTag.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.searchResults = action.payload;
+      })
+      .addCase(searchArticlesByTag.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

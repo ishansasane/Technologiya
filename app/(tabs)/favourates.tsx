@@ -18,7 +18,7 @@ const Favourates = () => {
       </Text>
       {saves.length === 0 ? (
         <View className="flex-1 items-center justify-center">
-          <Ionicons name="save-outline" color="gray" size={70} />
+          <Ionicons name="heart-dislike" color="gray" size={70} />
         </View>
       ) : (
         <>
