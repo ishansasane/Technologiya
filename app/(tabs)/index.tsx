@@ -8,6 +8,7 @@ import { Searchbar, Chip } from "react-native-paper";
 import { useState } from "react";
 import { clearSearch, searchArticlesByTag } from "@/redux/slice/articale";
 import TagBox from "../components/tagBox";
+import { useMemo } from "react";
 
 export default function Index() {
   const { data, isLoading, searchResults, selectedTag } = useSelector(
@@ -23,10 +24,17 @@ export default function Index() {
         .includes(selectedTag.toUpperCase()),
     );
   }
-  let uniqueTags = Array.from(
-    new Set(listData.flatMap((item) => item.tag_list)),
-  );
-  uniqueTags = ["All", ...uniqueTags];
+  const uniqueTags = useMemo(() => {
+    const set = new Set<string>();
+
+    listData.forEach((item) => {
+      item.tag_list.forEach((tag) => {
+        set.add(tag);
+      });
+    });
+
+    return ["All", ...Array.from(set)];
+  }, [data, searchResults]);
 
   return (
     <SafeAreaView className="flex-1 bg-black px-4 gap-2 pt-4">
