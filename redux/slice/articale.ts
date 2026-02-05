@@ -18,6 +18,7 @@ type ArticleSliceType = {
   data: DataType[];
   saved: DataType[];
   searchResults: DataType[];
+  selectedTag: string;
   error?: string;
 };
 
@@ -27,6 +28,7 @@ const initialState: ArticleSliceType = {
   saved: [],
   searchResults: [],
   error: undefined,
+  selectedTag: "",
 };
 
 export const fetchArticales = createAsyncThunk<DataType[]>(
@@ -53,17 +55,19 @@ export const searchArticlesByTag = createAsyncThunk<DataType[]>(
   async (tag) => {
     const response = await axios.get(`https://dev.to/api/articles?tag=${tag}`);
 
-    return response.data.map((a: any) => ({
-      id: a.id,
-      title: a.title,
-      isSaved: false,
-      url: a.url,
-      cover_image: a.cover_image,
-      published_at: a.published_at,
-      tag_list: a.tag_list,
-      user: a.user.name,
-      profile_image: a.user.profile_image_90,
-    }));
+    return Promise.all(
+      response.data.map((a: any) => ({
+        id: a.id,
+        title: a.title,
+        isSaved: false,
+        url: a.url,
+        cover_image: a.cover_image,
+        published_at: a.published_at,
+        tag_list: a.tag_list,
+        user: a.user.name,
+        profile_image: a.user.profile_image_90,
+      })),
+    );
   },
 );
 
@@ -85,9 +89,15 @@ const articaleSlice = createSlice({
         });
       }
     },
+    clearSearch: (state) => {
+      state.searchResults = [];
+    },
 
     clearFavourites: (state) => {
       state.saved = [];
+    },
+    selectTage: (state, action) => {
+      state.selectedTag = action.payload;
     },
   },
 
@@ -120,6 +130,7 @@ const articaleSlice = createSlice({
   },
 });
 
-export const { toggleFavourite, clearFavourites } = articaleSlice.actions;
+export const { toggleFavourite, clearFavourites, clearSearch, selectTage } =
+  articaleSlice.actions;
 
 export default articaleSlice.reducer;
