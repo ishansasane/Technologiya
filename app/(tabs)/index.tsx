@@ -17,13 +17,14 @@ export default function Index() {
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   let listData = query.trim().length > 0 ? searchResults : data;
-  if (selectedTag && selectedTag !== "All") {
+  if (selectedTag !== "All") {
     listData = listData.filter((item) =>
-      item.tag_list
-        .map((tag) => tag.toUpperCase())
-        .includes(selectedTag.toUpperCase()),
+      item.tag_list.some(
+        (tag) => tag.toUpperCase() === selectedTag.toUpperCase(),
+      ),
     );
   }
+
   const uniqueTags = useMemo(() => {
     const set = new Set<string>();
 
