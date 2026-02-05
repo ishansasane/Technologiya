@@ -28,7 +28,7 @@ const initialState: ArticleSliceType = {
   saved: [],
   searchResults: [],
   error: undefined,
-  selectedTag: "",
+  selectedTag: "All",
 };
 
 export const fetchArticales = createAsyncThunk<DataType[]>(
