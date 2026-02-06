@@ -173,20 +173,29 @@ export default function Index() {
         onPress={scrollToTop}
         style={{
           position: "absolute",
-          margin: 10,
+          margin: 16,
           right: 0,
           bottom: 0,
-          backgroundColor: "black",
+          backgroundColor: "rgba(0, 0, 0, 0.9)",
           borderWidth: 1.5,
-          borderColor: "white",
-          elevation: 8,
-          shadowColor: "",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.3,
-          shadowRadius: 8,
-          borderStyle: "dotted",
-          borderRadius: "100%",
+          borderColor: "rgba(255, 255, 255, 0.3)",
+          borderRadius: 100,
+
+          shadowColor: "#FFFFFF",
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.2,
+          shadowRadius: 15,
+          elevation: 4,
+
+          backdropFilter: "blur(10px)",
+          borderTopColor: "rgba(255, 255, 255, 0.4)",
+          borderLeftColor: "rgba(255, 255, 255, 0.3)",
+          borderRightColor: "rgba(255, 255, 255, 0.2)",
+          borderBottomColor: "rgba(255, 255, 255, 0.1)",
         }}
+        color="#FFFFFF"
+        mode="flat"
+        customSize={56}
       />
     </SafeAreaView>
   );
