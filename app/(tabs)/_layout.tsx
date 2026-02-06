@@ -3,14 +3,19 @@ import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchArticales, resetArticles } from "@/redux/slice/articale";
+import { RootType, store } from "@/redux/store";
+
+import { setI18nLanguage } from "@/assets/i18n";
 
 const TabsLayout = () => {
   const dispatch = useDispatch();
+  const language = useSelector((state: RootType) => state.language.language);
 
   useEffect(() => {
     dispatch(resetArticles());
     dispatch(fetchArticales(1));
-  }, []);
+    setI18nLanguage(language);
+  }, [language]);
 
   return (
     <Tabs

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Card from "../components/card";
 import { RootType } from "@/redux/store";
-import { Searchbar, Chip } from "react-native-paper";
+import { Searchbar, Chip, Menu, IconButton } from "react-native-paper";
 import { useState } from "react";
 import {
   clearSearch,
@@ -13,12 +13,23 @@ import {
 } from "@/redux/slice/articale";
 import TagBox from "../components/tagBox";
 import { useMemo } from "react";
+import i18n from "@/assets/i18n";
+import { setLanguage } from "@/redux/slice/settings";
 
 export default function Index() {
   const { data, isLoading, searchResults, selectedTag, page, hasMore } =
     useSelector((state: RootType) => state.article);
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
+
+  const changeLanguage = (lang: string) => {
+    closeMenu();
+    dispatch(setLanguage(lang));
+  };
   let listData = query.trim().length > 0 ? searchResults : data;
   if (selectedTag !== "All") {
     listData = listData.filter((item) =>
@@ -48,15 +59,38 @@ export default function Index() {
 
   return (
     <SafeAreaView className="flex-1 bg-black px-4 gap-2 pt-4">
-      <Text style={{ fontFamily: "nothing" }} className="text-white text-4xl">
-        Articales
-      </Text>
+      <View className="flex flex-row items-center justify-between bg-black">
+        <Text style={{ fontFamily: "nothing" }} className="text-white text-4xl">
+          {i18n.t("articles")}
+        </Text>
+
+        <Menu
+          visible={menuVisible}
+          onDismiss={closeMenu}
+          anchor={
+            <IconButton
+              icon="translate"
+              iconColor="white"
+              size={28}
+              onPress={openMenu}
+            />
+          }
+        >
+          <Menu.Item onPress={() => changeLanguage("en")} title="English" />
+          <Menu.Item onPress={() => changeLanguage("hi")} title="हिन्दी" />
+          <Menu.Item onPress={() => changeLanguage("ar")} title="العربية" />
+          <Menu.Item onPress={() => changeLanguage("ch")} title="中文" />
+          <Menu.Item onPress={() => changeLanguage("ja")} title="日本語" />
+          <Menu.Item onPress={() => changeLanguage("ko")} title="한국어" />
+        </Menu>
+      </View>
+
       <Searchbar
         mode="bar"
         loading={isLoading}
         style={{ height: 50 }}
         inputStyle={{ fontFamily: "nothing" }}
-        placeholder="Search"
+        placeholder={i18n.t("search")}
         value={query}
         onChangeText={(e) => {
           setQuery(e);
@@ -70,7 +104,7 @@ export default function Index() {
       ></Searchbar>
       <FlatList
         data={uniqueTags}
-        style={{ height: 45, paddingTop: 0 }}
+        style={{ height: 47, paddingTop: 0 }}
         horizontal={true}
         renderItem={({ item }) => <TagBox name={item} />}
       />
@@ -87,7 +121,7 @@ export default function Index() {
               className="text-white text-center py-4"
               style={{ fontFamily: "mono" }}
             >
-              Loading more...
+              {i18n.t("loading")}
             </Text>
           ) : null
         }

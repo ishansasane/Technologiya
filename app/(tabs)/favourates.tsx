@@ -4,6 +4,7 @@ import Card from "../components/card";
 import { useSelector } from "react-redux";
 import { RootType } from "@/redux/store";
 import { Ionicons } from "@expo/vector-icons";
+import i18n from "@/assets/i18n";
 
 const Favourates = () => {
   const saves = useSelector((state: RootType) => state.article.saved);
@@ -14,7 +15,7 @@ const Favourates = () => {
         style={{ fontFamily: "nothing" }}
         className="text-white text-4xl mb-4"
       >
-        Favourites
+        {i18n.t("favorites")}
       </Text>
       {saves.length === 0 ? (
         <View className="flex-1 items-center justify-center">
