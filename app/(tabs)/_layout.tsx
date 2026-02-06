@@ -36,7 +36,7 @@ const TabsLayout = () => {
         name="index"
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
+            <Ionicons name="home-sharp" color={color} size={size} />
           ),
         }}
       />

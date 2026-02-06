@@ -1,11 +1,10 @@
 import { FlatList, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
-
 import Card from "../components/card";
 import { RootType } from "@/redux/store";
 import { Searchbar, Chip, Menu, IconButton } from "react-native-paper";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   clearSearch,
   fetchArticales,
@@ -22,14 +21,21 @@ export default function Index() {
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   const [menuVisible, setMenuVisible] = useState(false);
+  const menuAnchorRef = useRef<View>(null);
 
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
+  const openMenu = () => {
+    setMenuVisible(true);
+  };
+
+  const closeMenu = () => {
+    setMenuVisible(false);
+  };
 
   const changeLanguage = (lang: string) => {
-    closeMenu();
     dispatch(setLanguage(lang));
+    closeMenu();
   };
+
   let listData = query.trim().length > 0 ? searchResults : data;
   if (selectedTag !== "All") {
     listData = listData.filter((item) =>
@@ -47,13 +53,11 @@ export default function Index() {
 
   const uniqueTags = useMemo(() => {
     const set = new Set<string>();
-
     listData.forEach((item) => {
       item.tag_list.forEach((tag) => {
         set.add(tag);
       });
     });
-
     return ["All", ...Array.from(set)];
   }, [data, searchResults]);
 
@@ -64,26 +68,57 @@ export default function Index() {
           {i18n.t("articles")}
         </Text>
 
-        <Menu
-          visible={menuVisible}
-          onDismiss={closeMenu}
-          anchor={
-            <IconButton
-              icon="translate"
-              iconColor="white"
-              size={28}
-              onPress={openMenu}
+        <View ref={menuAnchorRef} className="relative">
+          <IconButton
+            icon="translate"
+            iconColor="white"
+            size={28}
+            onPress={() => {
+              setMenuVisible(!menuVisible);
+            }}
+          />
+        </View>
+
+        {menuVisible && (
+          <View className="absolute right-0 top-12 z-50 bg-gray-900 rounded-lg shadow-lg w-48">
+            <Menu.Item
+              onPress={() => changeLanguage("en")}
+              title="English"
+              className="py-3"
             />
-          }
-        >
-          <Menu.Item onPress={() => changeLanguage("en")} title="English" />
-          <Menu.Item onPress={() => changeLanguage("hi")} title="हिन्दी" />
-          <Menu.Item onPress={() => changeLanguage("ar")} title="العربية" />
-          <Menu.Item onPress={() => changeLanguage("ch")} title="中文" />
-          <Menu.Item onPress={() => changeLanguage("ja")} title="日本語" />
-          <Menu.Item onPress={() => changeLanguage("ko")} title="한국어" />
-        </Menu>
+            <Menu.Item
+              onPress={() => changeLanguage("hi")}
+              title="हिन्दी"
+              className="py-3"
+            />
+            <Menu.Item
+              onPress={() => changeLanguage("ar")}
+              title="العربية"
+              className="py-3"
+            />
+            <Menu.Item
+              onPress={() => changeLanguage("ch")}
+              title="中文"
+              className="py-3"
+            />
+            <Menu.Item
+              onPress={() => changeLanguage("ja")}
+              title="日本語"
+              className="py-3"
+            />
+            <Menu.Item
+              onPress={() => changeLanguage("ko")}
+              title="한국어"
+              className="py-3"
+            />
+          </View>
+        )}
       </View>
+
+      {/* 🎯 FIX 4: Add overlay to close menu when clicking outside */}
+      {menuVisible && (
+        <View className="absolute inset-0 z-40" onTouchStart={closeMenu} />
+      )}
 
       <Searchbar
         mode="bar"
@@ -101,7 +136,8 @@ export default function Index() {
         onSubmitEditing={() => {
           dispatch(searchArticlesByTag(query.trim()));
         }}
-      ></Searchbar>
+      />
+
       <FlatList
         data={uniqueTags}
         style={{ height: 47, paddingTop: 0 }}
@@ -115,6 +151,7 @@ export default function Index() {
         renderItem={({ item }) => <Card {...item} />}
         onEndReached={loadMore}
         onEndReachedThreshold={0.6}
+        showsVerticalScrollIndicator={false}
         ListFooterComponent={
           isLoading ? (
             <Text
