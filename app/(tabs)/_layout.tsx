@@ -2,13 +2,14 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchArticales } from "@/redux/slice/articale";
+import { fetchArticales, resetArticles } from "@/redux/slice/articale";
 
 const TabsLayout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchArticales());
+    dispatch(resetArticles());
+    dispatch(fetchArticales(1));
   }, []);
 
   return (
@@ -20,6 +21,7 @@ const TabsLayout = () => {
         tabBarStyle: {
           height: 60,
           backgroundColor: "black",
+
           paddingTop: 5,
           borderTopWidth: 1,
         },

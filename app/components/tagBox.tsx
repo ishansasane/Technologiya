@@ -27,6 +27,7 @@ const TagBox = ({ name }: TagBoxProps) => {
         borderWidth: 1.5,
         borderColor: isSelected ? "#ffffff" : "#374151",
         backgroundColor: "#111827",
+        borderStyle: isSelected ? "dotted" : "solid",
       }}
       textStyle={{
         color: isSelected ? "#ffffff" : "#e5e7eb",

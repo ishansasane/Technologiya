@@ -6,14 +6,17 @@ import Card from "../components/card";
 import { RootType } from "@/redux/store";
 import { Searchbar, Chip } from "react-native-paper";
 import { useState } from "react";
-import { clearSearch, searchArticlesByTag } from "@/redux/slice/articale";
+import {
+  clearSearch,
+  fetchArticales,
+  searchArticlesByTag,
+} from "@/redux/slice/articale";
 import TagBox from "../components/tagBox";
 import { useMemo } from "react";
 
 export default function Index() {
-  const { data, isLoading, searchResults, selectedTag } = useSelector(
-    (state: RootType) => state.article,
-  );
+  const { data, isLoading, searchResults, selectedTag, page, hasMore } =
+    useSelector((state: RootType) => state.article);
   const [query, setQuery] = useState("");
   const dispatch = useDispatch();
   let listData = query.trim().length > 0 ? searchResults : data;
@@ -24,6 +27,12 @@ export default function Index() {
       ),
     );
   }
+
+  const loadMore = () => {
+    if (!isLoading && hasMore && query.trim() === "") {
+      dispatch(fetchArticales(page));
+    }
+  };
 
   const uniqueTags = useMemo(() => {
     const set = new Set<string>();
@@ -70,6 +79,18 @@ export default function Index() {
         data={listData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <Card {...item} />}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.6}
+        ListFooterComponent={
+          isLoading ? (
+            <Text
+              className="text-white text-center py-4"
+              style={{ fontFamily: "mono" }}
+            >
+              Loading more...
+            </Text>
+          ) : null
+        }
       />
     </SafeAreaView>
   );

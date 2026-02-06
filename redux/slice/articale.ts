@@ -20,6 +20,8 @@ type ArticleSliceType = {
   searchResults: DataType[];
   selectedTag: string;
   error?: string;
+  page: number;
+  hasMore: boolean;
 };
 
 const initialState: ArticleSliceType = {
@@ -29,12 +31,16 @@ const initialState: ArticleSliceType = {
   searchResults: [],
   error: undefined,
   selectedTag: "All",
+  page: 1,
+  hasMore: true,
 };
 
-export const fetchArticales = createAsyncThunk<DataType[]>(
+export const fetchArticales = createAsyncThunk<DataType[], number>(
   "fetchArticales",
-  async () => {
-    const response = await axios.get("https://dev.to/api/articles");
+  async (page) => {
+    const response = await axios.get(
+      `https://dev.to/api/articles?page=${page}&per_page=10`,
+    );
 
     return response.data.map((a: any) => ({
       id: a.id,
@@ -99,6 +105,11 @@ const articaleSlice = createSlice({
     selectTage: (state, action) => {
       state.selectedTag = action.payload;
     },
+    resetArticles: (state) => {
+      state.data = [];
+      state.page = 1;
+      state.hasMore = true;
+    },
   },
 
   extraReducers: (builder) => {
@@ -109,7 +120,17 @@ const articaleSlice = createSlice({
       })
       .addCase(fetchArticales.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        const existingIds = new Set(state.data.map((item) => item.id));
+        const newItems = action.payload.filter(
+          (item) => !existingIds.has(item.id),
+        );
+
+        if (action.payload.length === 0) {
+          state.hasMore = false;
+        } else {
+          state.data.push(...newItems);
+          state.page += 1;
+        }
       })
       .addCase(fetchArticales.rejected, (state, action) => {
         state.isLoading = false;
@@ -130,7 +151,12 @@ const articaleSlice = createSlice({
   },
 });
 
-export const { toggleFavourite, clearFavourites, clearSearch, selectTage } =
-  articaleSlice.actions;
+export const {
+  toggleFavourite,
+  clearFavourites,
+  clearSearch,
+  selectTage,
+  resetArticles,
+} = articaleSlice.actions;
 
 export default articaleSlice.reducer;
