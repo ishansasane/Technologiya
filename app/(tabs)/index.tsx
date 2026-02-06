@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import Card from "../components/card";
 import { RootType } from "@/redux/store";
-import { Searchbar, Chip, Menu, IconButton } from "react-native-paper";
+import { Searchbar, FAB, Menu, IconButton } from "react-native-paper";
 import { useState, useRef, useEffect } from "react";
 import {
   clearSearch,
@@ -22,6 +22,7 @@ export default function Index() {
   const dispatch = useDispatch();
   const [menuVisible, setMenuVisible] = useState(false);
   const menuAnchorRef = useRef<View>(null);
+  const flatListRef = useRef<FlatList>(null);
 
   const openMenu = () => {
     setMenuVisible(true);
@@ -29,6 +30,10 @@ export default function Index() {
 
   const closeMenu = () => {
     setMenuVisible(false);
+  };
+
+  const scrollToTop = () => {
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
   };
 
   const changeLanguage = (lang: string) => {
@@ -115,7 +120,6 @@ export default function Index() {
         )}
       </View>
 
-      {/* 🎯 FIX 4: Add overlay to close menu when clicking outside */}
       {menuVisible && (
         <View className="absolute inset-0 z-40" onTouchStart={closeMenu} />
       )}
@@ -147,6 +151,7 @@ export default function Index() {
 
       <FlatList
         data={listData}
+        ref={flatListRef}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <Card {...item} />}
         onEndReached={loadMore}
@@ -162,6 +167,26 @@ export default function Index() {
             </Text>
           ) : null
         }
+      />
+      <FAB
+        icon="arrow-up"
+        onPress={scrollToTop}
+        style={{
+          position: "absolute",
+          margin: 10,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "black",
+          borderWidth: 1.5,
+          borderColor: "white",
+          elevation: 8,
+          shadowColor: "",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          borderStyle: "dotted",
+          borderRadius: "100%",
+        }}
       />
     </SafeAreaView>
   );
